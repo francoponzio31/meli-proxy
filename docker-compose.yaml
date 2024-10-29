@@ -1,0 +1,44 @@
+version: "3.9"
+
+services:
+
+  meli_proxy:
+    build:
+      context: ./meli_proxy
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./meli_proxy:/app
+    ports:
+      - 8080:8080
+    depends_on:
+      - redis
+
+  redis:
+    container_name: meli_proxy_redis
+    image: redis:latest
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - meli_proxy_redis:/data
+    ports:
+      - 6379:6379
+
+  prometheus:
+    container_name: meli_proxy_prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+      - meli_proxy_prometheus:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+    ports:
+      - 9090:9090
+    depends_on:
+      - meli_proxy
+
+volumes:
+  meli_proxy_redis:
+  meli_proxy_prometheus:

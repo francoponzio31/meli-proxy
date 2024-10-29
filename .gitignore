@@ -1,0 +1,12 @@
+__pycache__/
+venv/
+*.db
+json_storage
+/app/fileserver/files/*
+!/app/fileserver/files/
+*data.json
+.env
+*.log
+.scannerwork
+.pytest_cache
+TODO.txt
